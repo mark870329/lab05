@@ -1,0 +1,53 @@
+#include <Keypad.h>
+byte led[]={16,15,14,13,12,7,6};
+byte num[10]={
+  B0111111,
+  B0000110,
+  B1011011,
+  B1001111,
+  B1100110,
+  B1101101,
+  B1111101,
+  B0000111,
+  B1111111,
+  B1101111 };
+const byte ROWS = 4; // 4 Rows
+const byte COLS = 4; // 4 Columns
+// 定義 Keypad 的按鍵
+char keys[ROWS][COLS] = {
+{'7', '8', '9', 'C'}, {'4','5','6', 'D'},
+{'1', '2', '3', 'E'}, {'0', 'A', 'B', 'F'}
+};
+// 定義 Keypad 連到 Arduino 的接腳
+byte rowPins[ROWS] = {5, 4, 3, 2};
+// 連到 Keypad 的 4 個 Rows
+byte colPins[COLS] = {11, 10, 9, 8};
+// 連到 Keypad 的 4 個 Columns
+Keypad keypad =
+Keypad( makeKeymap(keys), rowPins,
+colPins, ROWS, COLS );
+void setup(){
+ 
+Serial.begin(9600);
+int i;
+for(i=0;i<8;i++)
+pinMode(led[i],OUTPUT);
+}
+void loop(){
+  int i;
+  
+char key = keypad.getKey(); // 讀取 Keypad的輸入
+
+if (key != NO_KEY){
+Serial.println(key);
+int v=key-48;
+for(i=0;i<8;i++)
+{
+  if(bitRead(num[v],i))
+  digitalWrite(led[i],HIGH);
+  else
+  digitalWrite(led[i],LOW);
+}
+}
+}
+
